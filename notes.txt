@@ -3,10 +3,12 @@ download Kaggle data
 Install packages -> dplyr
 		 -> ggplot2
 		 -> stringr
+		 -> lubridate
 
 library(dplyr)
 library(ggplot2)
 library(stringr)
+library(lubridate)
 
 set wd to KoreanWar.csv
 
@@ -66,3 +68,35 @@ for(i in 1:36574){
 }
 
 Can then take the sum of Trues and subtract it from the total and we see we only have 63 columns that arent correct
+
+head(deaths)
+
+just shows the top of the table
+
+deaths%>%
+  group_by(INCIDENT_DATE)%>%
+  summarize(num_deaths<-n())
+
+-grouping by day aka INCIDENT_DATE and then counting by using summarize(numdeaths<-n())
+-adding filter
+
+deaths%>%
+  filter(str_detect(deaths$INCIDENT_DATE,"\\d{8}")==TRUE)%>%
+  group_by(INCIDENT_DATE)%>%
+  summarize(num_deaths<-n())
+
+- says keep records that hold true to str_detect(deaths$INCIDENT_DATE,"\\d{8}")
+
+df<-deaths%>%
+  filter(str_detect(deaths$INCIDENT_DATE,"\\d{8}")==TRUE)%>%
+  group_by(INCIDENT_DATE)%>%
+  summarize(num_deaths=n())%>%
+  mutate(date=ymd(INCIDENT_DATE))%>%
+  select(INCIDENT_DATE,num_deaths,date)
+
+-adding in a new column date where INCIDENT date is mutated from a chr column to a date using lubridate
+-lookup strftime to look up format for dates when using scale_x_date
+
+ggplot()+
+  geom_line(data=df,aes(x=date,y=num_deaths))+
+  scale_x_date(date_breaks='3 months',date_labels = "%b %y")
