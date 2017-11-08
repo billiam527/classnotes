@@ -17,7 +17,7 @@ dracula_pos<-dracula_words%>%
   filter(count>=66)
 
 
-dracula_pos<-factor(dracula_pos$word, levels=dracula_pos$word)
+dracula_pos$word<-factor(dracula_pos$word, levels=dracula_pos$word)
 
 ggplot()+
   geom_bar(data=dracula_pos,aes(x=word,y=count),stat='identity')+
@@ -31,7 +31,7 @@ dracula_neg<-dracula_words%>%
   filter(count>=49)%>%
   filter(word != 'miss')
 
-dracula_neg<-factor(dracula_neg$word, levels=dracula_neg$word)
+dracula_neg$word<-factor(dracula_neg$word, levels=dracula_neg$word)
 
 ggplot()+
   geom_bar(data=dracula_neg,aes(x=word,y=count),stat='identity')+
